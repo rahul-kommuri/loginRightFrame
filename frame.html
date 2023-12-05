@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Your Website Title</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.9); /* Slightly transparent white background */
+            padding: 15px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Adding a subtle shadow */
+        }
+
+        header img {
+            height: 40px; /* Adjusted logo height */
+        }
+
+        #carousel-container {
+            margin-top: 60px; /* Adjusted margin */
+            text-align: center;
+        }
+
+        .carousel-item {
+            display: none;
+            position: absolute;
+            text-align: center;
+            width: 100%;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .carousel-item img {
+            width: 100%;
+            height: auto;
+        }
+
+        .carousel-caption {
+            position: absolute;
+            top: 50%;
+            left: 20%;
+            transform: translate(-50%, -50%);
+            color: #fff;
+            font-size: 18px;
+            
+            padding: 10px;
+            border-radius: 5px;
+            max-width: 80%;
+        }
+
+        footer {
+            background-color: #333;
+            color: #fff;
+            padding: 15px;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <img src="https://icons8.com/icon/baTWeZAqG8lF/old-vmware-logo" alt="Your Logo">
+</header>
+
+<div id="carousel-container">
+    <div class="carousel-item">
+        <img src="https://picsum.photos/800/600?grayscale" alt="Image 1">
+        <div class="carousel-caption">Impressive Description 1</div>
+    </div>
+    <div class="carousel-item">
+        <img src="https://picsum.photos/800/600/?blur" alt="Image 2">
+        <div class="carousel-caption">Impressive Description 2</div>
+    </div>
+    <div class="carousel-item">
+        <img src="https://picsum.photos/800/600" alt="Image 3">
+        <div class="carousel-caption">Impressive Description 3</div>
+    </div>
+</div>
+
+<footer>
+    &copy; 2023 Your Company | <a href="#">Privacy</a> | <a href="#">Terms</a> | <span id="current-time"></span> | <span id="user-location"></span>
+</footer>
+
+<script>
+    // JavaScript for Carousel
+    let currentIndex = 0;
+    const items = document.querySelectorAll('.carousel-item');
+
+    function showItem(index) {
+        items.forEach(item => item.style.opacity = 0);
+        items[index].style.display = 'block';
+        setTimeout(() => {
+            items[index].style.opacity = 1;
+        }, 50); // Adding a slight delay for the fade effect
+    }
+
+    function nextItem() {
+        currentIndex = (currentIndex + 1) % items.length;
+        showItem(currentIndex);
+    }
+
+    setInterval(nextItem, 3000); // Adjusted interval to 3 seconds for better visibility
+
+    // JavaScript for Current Time
+    function updateCurrentTime() {
+        const currentTimeElement = document.getElementById('current-time');
+        const now = new Date();
+        const hours = now.getHours().toString().padStart(2, '0');
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+        currentTimeElement.textContent = `${hours}:${minutes}`;
+    }
+
+    setInterval(updateCurrentTime, 1000);
+
+    // JavaScript for User Location (Requires HTTPS)
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(position => {
+            const userLocationElement = document.getElementById('user-location');
+            const latitude = position.coords.latitude.toFixed(4);
+            const longitude = position.coords.longitude.toFixed(4);
+
+            // Reverse geocoding using OpenCage API
+            const apiKey = '32ae0c0ab73046c98e286946c041da13';
+            const apiUrl = `https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=${apiKey}`;
+
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    const city = data.results[0].components.city || data.results[0].components.town;
+                    userLocationElement.textContent = `City: ${city}`;
+                })
+                .catch(error => {
+                    console.error('Error fetching location:', error.message);
+                });
+        }, error => {
+            console.error(error.message);
+        });
+    }
+</script>
+
+</body>
+</html>
